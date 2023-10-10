@@ -1,0 +1,157 @@
+﻿@model IEnumerable<User>
+@{
+    ViewData["Title"] = "Panel Administratora";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Panel Administratora</title>
+    <!-- Dodaj linki do plików CSS Bootstrapa -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <style>
+        /* Dodaj styl dla tła niebieskiego */
+        body {
+            background-color: #007BFF;
+            color: white; /* Kolor tekstu na tle niebieskiego */
+        }
+
+        /* Dodaj styl dla tabeli */
+        table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529; /* Kolor tekstu w tabeli */
+        }
+
+        table th,
+        table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6; /* Kolor krawędzi tabeli */
+        }
+
+        /* Dodaj styl dla przycisków */
+        .btn {
+            color: #fff;
+            background-color: #007BFF;
+            border-color: #007BFF;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        /* Dodaj styl dla formularzy */
+        form {
+            margin-bottom: 1rem;
+        }
+
+        .checked {
+    background-color: green; /* Kolor tła po zaznaczeniu */
+    color: white; /* Kolor tekstu po zaznaczeniu */
+}
+
+.unchecked {
+    background-color: red; /* Kolor tła po odznaczeniu */
+    color: white; /* Kolor tekstu po odznaczeniu */
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+<h2>Ustawienia Wymagań Hasła</h2>
+<form asp-controller="Home" asp-action="UpdatePasswordRequirements" method="post">
+    <div class="form-group">
+        <label for="minimumLength">Minimalna długość hasła:</label>
+        <input type="number" id="minimumLength" name="minimumLength" class="form-control" value="@ViewBag.MinimumLength" required>
+    </div>
+    <div class="form-group">
+        <label for="requireUppercase">Wymagana wielka litera:</label>
+        <input type="number" id="requireUppercase" name="requireUppercase" class="form-control" value="@ViewBag.RequireUppercase" required >
+    </div>
+    <div class="form-group">
+        <label for="requireDigit">Wymagana cyfra:</label>
+        <input type="number" id="requireDigit" name="requireDigit" class="form-control" value="@ViewBag.RequireDigit" required>
+    </div>
+    <div class="form-group">
+        <label for="requireSpecialChar">Wymagany znak specjalny:</label>
+        <input type="number" id="requireSpecialChar" name="requireSpecialChar" class="form-control" value="@ViewBag.RequireSpecialChar" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+</form>
+
+<p>Obecny limit czasu sesji: @ViewBag.SessionTimeoutInDays dni</p>
+
+<form method="post" action="@Url.Action("SetSessionTimeout", "Home")">
+    <label for="sessionTimeout">Limit czasu sesji (dni):</label>
+    <input type="number" id="sessionTimeout" name="sessionTimeout" value="@ViewBag.SessionTimeoutInDays" />
+    <input type="submit" value="Zmień limit czasu sesji" />
+</form>
+        <h2>Lista użytkowników</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Ograniczenia hasła</th>
+                    <th>Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var user in Model)
+                {
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>@user.Email</td>
+                        <td>
+                            @if (user.IsPasswordComplexityEnabled)
+                            {
+                                <span class="text-success">Włączone</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">Wyłączone</span>
+                            }
+
+                            <form method="post" asp-controller="Home" asp-action="EnablePasswordComplexity">
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <button type="submit" class="btn btn-link">Włącz ograniczenia hasła</button>
+                            </form>
+
+                            <form method="post" asp-controller="Home" asp-action="DisablePasswordComplexity">
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <button type="submit" class="btn btn-link">Wyłącz ograniczenia hasła</button>
+                            </form>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("EditUser", "Home", new { id = user.Id })" class="btn btn-primary">Edytuj</a>
+                            <a href="@Url.Action("BlockUser", "Home", new { id = user.Id })" class="btn btn-danger">Blokuj</a>
+                            <a href="@Url.Action("DeleteUser", "Home", new { id = user.Id })" class="btn btn-warning">Usuń</a>
+                             @if (user.UserName == "ADMIN"){
+                            <a href="@Url.Action("ChangePassword", "Home", new { id = user.Id })" class="btn btn-info">Zmień hasło</a>
+                             }
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h3>Dodaj nowego użytkownika</h3>
+        <form method="get" action="@Url.Action("AddUser", "Home")">
+            <button type="submit" class="btn btn-success">Dodaj użytkownika</button>
+        </form>
+
+        <form method="post" asp-controller="Home" asp-action="Logout" id="logoutForm">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-link">Wyloguj</button>
+        </form>
+    </div>
+
+    <!-- Dodaj skrypty JavaScript Bootstrapa (jeśli są wymagane) -->
+</body>
+</html>

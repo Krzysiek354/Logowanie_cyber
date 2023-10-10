@@ -1,0 +1,29 @@
+﻿@model User
+
+@{
+    ViewData["Title"] = "Edytuj użytkownika";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="EditUser" method="post">
+ 
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="UserName">Nazwa użytkownika:</label>
+        <input class="form-control" asp-for="UserName" />
+        <span asp-validation-for="UserName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email">Email:</label>
+        <input class="form-control" asp-for="Email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+
+
+    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+    <a asp-action="AdminDashboard" class="btn btn-secondary">Anuluj</a>
+</form>

@@ -1,0 +1,89 @@
+﻿@{
+    ViewData["Title"] = "Zmień hasło";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Zmień hasło</title>
+    <!-- Dodaj linki do plików CSS Bootstrapa -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Dodaj styl dla tła niebieskiego */
+        body {
+            background-color: #007BFF;
+            color: white; /* Kolor tekstu na tle niebieskiego */
+        }
+
+        /* Dodaj styl dla formularza */
+        form {
+            margin-top: 1rem;
+            max-width: 400px;
+            background-color: #fff; /* Tło formularza */
+            padding: 20px;
+            border-radius: 5px; /* Zaokrąglenie rogów formularza */
+        }
+
+        /* Dodaj styl dla przycisków */
+        .btn {
+            color: #fff;
+            background-color: #007BFF;
+            border-color: #007BFF;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        /* Dodaj styl dla błędów walidacji */
+        .validation-summary-errors {
+            color: #ff0000; /* Kolor czerwony dla błędów walidacji */
+        }
+
+        .field-validation-error {
+            color: #ff0000; /* Kolor czerwony dla błędów walidacji pól formularza */
+        }
+    </style>
+</head>
+<body>
+ <div class="container login-container">
+    <h2 class="text-center">Zmień hasło</h2>
+    <form method="post" action="/Home/ChangePasswordd">
+        <div class="form-group">
+            <label for="OldPassword" style="color: #007BFF;">Stare hasło:</label>
+            <input type="password" id="OldPassword" name="OldPassword" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="NewPassword" style="color: #007BFF;">Nowe hasło:</label>
+            <input type="password" id="NewPassword" name="NewPassword" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="ConfirmPassword" style="color: #007BFF;">Potwierdź nowe hasło:</label>
+            <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Zmień hasło</button>
+    </form>
+      @if (TempData["ChangePasswordError"] != null)
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in (IEnumerable<string>)TempData["ChangePasswordError"])
+            {
+                <p style="color: red;">@error</p>
+            }
+        </div>
+    }
+
+    <form method="post" asp-controller="Home" asp-action="Logout" id="logoutForm">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-link">Wyloguj</button>
+        </form>
+
+        <small>Jesli hasło nie spełnia wymagan to zminiasz do skutku</small>
+</div>
+</body>
+</html>

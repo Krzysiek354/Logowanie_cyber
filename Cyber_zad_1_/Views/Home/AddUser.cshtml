@@ -1,0 +1,38 @@
+﻿@{
+    ViewBag.Title = "Add User";
+}
+
+<h2>Add User</h2>
+
+<form method="post">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@modelError.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+    <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="UserName" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="Email" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Role</label>
+        <select name="Role" class="form-control" required>
+            <option value="User">User</option>
+            <!-- Dodaj inne role do wyboru, jeśli są dostępne -->
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add User</button>
+</form>
